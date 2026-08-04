@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 
 export default function ModalParticipar({ isOpen, onClose, ministerio }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,13 +50,13 @@ export default function ModalParticipar({ isOpen, onClose, ministerio }) {
           </svg>
         </button>
         <h2 id="modal-titulo">Unirse a un ministerio</h2>
-        
+
         {success && (
           <div style={{ padding: '1rem', background: '#d4edda', color: '#155724', borderRadius: '4px', marginBottom: '1rem' }}>
             <strong>¡Solicitud enviada!</strong> Nos contactaremos contigo pronto.
           </div>
         )}
-        
+
         {error && (
           <div style={{ padding: '1rem', background: '#f8d7da', color: '#721c24', borderRadius: '4px', marginBottom: '1rem' }}>
             <strong>Error.</strong> No se pudo enviar. Inténtalo de nuevo.

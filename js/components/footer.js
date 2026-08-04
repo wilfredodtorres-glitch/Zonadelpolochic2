@@ -1,11 +1,11 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const footerHTML = `
   <footer class="pie">
     <div class="contenedor">
       <div class="rejilla rejilla-3">
         <div>
           <div class="pie-marca">
-            <img src="imagenes/logo-adventista-claro.png" alt="Iglesia Adventista del Séptimo Día" width="160" height="44" />
+            <img src="imagenes/logo-adventista-claro.png" alt="Iglesia Adventista del Séptimo Día"/>
           </div>
           <p>Comunidad de fe, esperanza y servicio en Telemán, Zona Polochic, Alta Verapaz.</p>
         </div>
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
   </footer>
   `;
-  
+
   const footerContenedor = document.getElementById('footer-contenedor');
   if (footerContenedor) {
     footerContenedor.outerHTML = footerHTML;

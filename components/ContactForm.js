@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  
+
   const supabase = createClient();
 
   const handleSubmit = async (e) => {
@@ -41,13 +41,13 @@ export default function ContactForm() {
     <form className="tarjeta formulario formulario-contacto" onSubmit={handleSubmit}>
       <h2>Escríbenos</h2>
       <p className="formulario-intro">Completa el formulario y te responderemos lo antes posible.</p>
-      
+
       {success && (
         <div style={{ padding: '1rem', background: '#d4edda', color: '#155724', borderRadius: '4px', marginBottom: '1rem' }}>
           <strong>Mensaje enviado.</strong> Gracias por escribirnos, te responderemos pronto.
         </div>
       )}
-      
+
       {error && (
         <div style={{ padding: '1rem', background: '#f8d7da', color: '#721c24', borderRadius: '4px', marginBottom: '1rem' }}>
           <strong>Error.</strong> No se pudo enviar el mensaje. Inténtalo de nuevo.
