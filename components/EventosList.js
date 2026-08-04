@@ -81,6 +81,7 @@ export default function EventosList({ eventosData = [] }) {
         isOpen={modalOpen} 
         onClose={() => setModalOpen(false)} 
         ministerio={selectedInteres} 
+        tipo="evento"
       />
     </>
   );

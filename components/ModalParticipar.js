@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export default function ModalParticipar({ isOpen, onClose, ministerio }) {
+export default function ModalParticipar({ isOpen, onClose, ministerio, tipo = "ministerio" }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -49,7 +49,7 @@ export default function ModalParticipar({ isOpen, onClose, ministerio }) {
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <h2 id="modal-titulo">Unirse a un ministerio</h2>
+        <h2 id="modal-titulo">{tipo === "evento" ? "Confirmar asistencia" : "Unirse a un ministerio"}</h2>
 
         {success && (
           <div style={{ padding: '1rem', background: '#d4edda', color: '#155724', borderRadius: '4px', marginBottom: '1rem' }}>
@@ -66,7 +66,7 @@ export default function ModalParticipar({ isOpen, onClose, ministerio }) {
         {!success && (
           <form id="formulario-modal" onSubmit={handleSubmit}>
             <div className="campo">
-              <label htmlFor="modal-ministerio">Ministerio de interés</label>
+              <label htmlFor="modal-ministerio">{tipo === "evento" ? "Evento seleccionado" : "Ministerio de interés"}</label>
               <input id="modal-ministerio" name="modal-ministerio" type="text" readOnly value={ministerio || ""} />
             </div>
             <div className="campo">
@@ -78,7 +78,7 @@ export default function ModalParticipar({ isOpen, onClose, ministerio }) {
               <input id="modal-telefono" name="modal-telefono" type="tel" required placeholder="+502 0000 0000" />
             </div>
             <button className="btn btn-secundario" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Enviando..." : "Enviar solicitud"}
+              {isSubmitting ? "Enviando..." : (tipo === "evento" ? "Confirmar" : "Enviar solicitud")}
             </button>
           </form>
         )}
