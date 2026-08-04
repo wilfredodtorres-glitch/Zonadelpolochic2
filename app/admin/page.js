@@ -53,7 +53,9 @@ export default async function AdminDashboard() {
           <div className="tarjeta">
             <h2>Últimas Donaciones</h2>
             <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              {donaciones && donaciones.length > 0 ? (
+              {errDonaciones ? (
+                <p style={{ color: 'red' }}>Error: {errDonaciones.message || JSON.stringify(errDonaciones)}</p>
+              ) : donaciones && donaciones.length > 0 ? (
                 donaciones.map((don) => (
                   <li key={don.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
                     <strong>Q{don.monto}</strong> - {don.donante} <br />
@@ -69,7 +71,9 @@ export default async function AdminDashboard() {
           <div className="tarjeta">
             <h2>Mensajes Recientes</h2>
             <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              {mensajes && mensajes.length > 0 ? (
+              {errMensajes ? (
+                <p style={{ color: 'red' }}>Error: {errMensajes.message || JSON.stringify(errMensajes)}</p>
+              ) : mensajes && mensajes.length > 0 ? (
                 mensajes.map((msg) => (
                   <li key={msg.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
                     <strong>{msg.nombre}</strong> ({msg.motivo}) <br />
@@ -85,7 +89,9 @@ export default async function AdminDashboard() {
           <div className="tarjeta">
             <h2>Solicitudes Ministerio</h2>
             <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              {solicitudes && solicitudes.length > 0 ? (
+              {errSolicitudes ? (
+                <p style={{ color: 'red' }}>Error: {errSolicitudes.message || JSON.stringify(errSolicitudes)}</p>
+              ) : solicitudes && solicitudes.length > 0 ? (
                 solicitudes.map((sol) => (
                   <li key={sol.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
                     <strong>{sol.nombre}</strong> <br />

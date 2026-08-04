@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ModalParticipar({ isOpen, onClose, ministerio }) {
   const [isSubmitting, setIsSubmitting] = useState(false);

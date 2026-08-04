@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogoutButton() {
@@ -13,7 +13,7 @@ export default function AdminLogoutButton() {
   };
 
   return (
-    <button className="btn btn-borde" onClick={handleLogout}>
+    <button className="btn btn-secundario" onClick={handleLogout}>
       Cerrar sesión
     </button>
   );

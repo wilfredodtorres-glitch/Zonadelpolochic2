@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
