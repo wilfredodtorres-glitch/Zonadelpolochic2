@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iglesia Adventista Telemán, Zona Polochic | Inicio</title>
+  <meta name="description"
+    content="Iglesia Adventista del Séptimo Día de Telemán, Zona Polochic. Horarios de culto, ministerios, salud, eventos, contacto y donaciones." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="pagina-inicio">
+  <div id="menu-contenedor"></div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="kicker">Zona Polochic · Alta Verapaz</p>
+        <h1>Iglesia Adventista del Séptimo Día, Telemán</h1>
+        <p class="lead">Un lugar para encontrar esperanza, crecer en la fe y servir a nuestra comunidad. Te esperamos
+          cada sábado.</p>
+        <div class="hero-acciones">
+          <a class="btn btn-principal" href="eventos.html">Ver próximos eventos</a>
+          <a class="btn btn-borde" href="contacto.html">Contáctanos</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion" style="padding-top:0;padding-bottom:2rem">
+      <div class="contenedor">
+        <div class="stats">
+          <div class="stat">
+            <span class="valor">9:00 AM - 11:00 AM</span>
+            <span class="etiqueta">Escuela Sabática</span>
+          </div>
+          <div class="stat">
+            <span class="valor">11:00 AM - 12:00 PM</span>
+            <span class="etiqueta">Culto Divino</span>
+          </div>
+          <div class="stat">
+            <span class="valor">4:00 PM - 6:00 PM</span>
+            <span class="etiqueta">Sociedad de Jóvenes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="seccion-cabecera">
+          <span class="seccion-etiqueta">Nuestra misión</span>
+          <h2>Nuestra misión en el Polochic</h2>
+          <p class="intro">Fortalecer la presencia de la iglesia en la era digital, ampliar nuestro alcance y emprender
+            un ministerio más cercano con la comunidad, para alcanzar más almas para Cristo.</p>
+        </div>
+        <div class="rejilla rejilla-3">
+          <article class="tarjeta tarjeta-con-imagen">
+            <img src="imagenes/escuela-sabatica.png" alt="Escuela Sabática: estudio de la Biblia los sábados en Telemán"
+              width="800" height="600" loading="lazy" />
+            <div class="tarjeta-cuerpo">
+              <h3>Palabra viva</h3>
+              <p>Estudio bíblico cada sábado y grupos pequeños en las comunidades del Polochic.</p>
+              <a href="ministerio.html">Conocer más</a>
+            </div>
+          </article>
+          <article class="tarjeta tarjeta-con-imagen">
+            <img src="imagenes/feria-salud.png" alt="Feria de salud comunitaria adventista en la Zona Polochic"
+              width="800" height="600" loading="lazy" />
+            <div class="tarjeta-cuerpo">
+              <h3>Salud integral</h3>
+              <p>Ferias de salud, charlas de nutrición y los ocho remedios naturales.</p>
+              <a href="salud.html">Conocer más</a>
+            </div>
+          </article>
+          <article class="tarjeta tarjeta-con-imagen">
+            <img src="imagenes/servicio-comunidad.png" alt="Voluntarios adventistas sirviendo a familias del Polochic"
+              width="800" height="600" loading="lazy" />
+            <div class="tarjeta-cuerpo">
+              <h3>Servicio a la comunidad</h3>
+              <p>Ayuda social, visitación y acompañamiento a familias de la región.</p>
+              <a href="ministerio.html">Conocer más</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion radio-seccion">
+      <div class="contenedor">
+        <div class="radio-banner">
+          <div class="radio-onda" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="radio-contenido">
+            <span class="seccion-etiqueta" id="radio-status-text">En vivo</span>
+            <h2>🎙️ Radio Adventista de Guatemala</h2>
+            <p>Escucha Unión Radio GT en línea: música, devocionales, programas de salud y esperanza las 24 horas.</p>
+
+            <audio id="radio-audio" preload="none"></audio>
+
+            <div class="radio-reproductor-acciones">
+              <button type="button" class="btn btn-principal" id="btn-radio-play" aria-label="Escuchar la radio adventista en vivo">
+                <svg class="icono-play btn-icono" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <span class="btn-texto">Escuchar ahora</span>
+              </button>
+            </div>
+          </div>
+          <div class="radio-visual" aria-hidden="true">
+            <div class="radio-circulo"></div>
+            <div class="radio-circulo radio-circulo-2"></div>
+            <div class="radio-circulo radio-circulo-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion-cta">
+      <div class="contenedor">
+        <div class="bloque-cta">
+          <h2>Sé parte de la obra</h2>
+          <p>Tus diezmos, ofrendas y donaciones sostienen proyectos de evangelismo, salud y ayuda social en toda la zona
+            del Polochic.</p>
+          <div class="hero-acciones">
+            <a class="btn btn-principal" href="donar.html">Quiero donar</a>
+            <a class="btn btn-borde" href="eventos.html">Calendario</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-contenedor"></div>
+
+  <div id="avisos"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/components/menu.js"></script>
+  <script src="js/components/footer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

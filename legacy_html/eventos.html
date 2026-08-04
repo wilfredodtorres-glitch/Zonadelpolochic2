@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Eventos y calendario | Iglesia Adventista Telemán</title>
+<meta name="description" content="Calendario de cultos, campañas evangelísticas, ferias de salud y actividades juveniles de la Iglesia Adventista de Telemán, Zona Polochic." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="pagina-interna">
+<div id="menu-contenedor"></div>
+
+<main>
+  <div class="cabecera-visual" style="background-image:url('imagenes/escuela-sabatica.png')">
+    <div class="cabecera-visual-inner">
+      <span class="seccion-etiqueta">Actualidad</span>
+      <h1>Eventos</h1>
+      <p class="intro">Todas nuestras actividades son abiertas al público. Filtra por tipo de evento y acompáñanos.</p>
+    </div>
+  </div>
+
+  <div class="seccion">
+  <div class="contenedor">
+    <div class="filtros" role="group" aria-label="Filtrar eventos">
+      <button class="filtro activo" data-filtro="todos">Todos</button>
+      <button class="filtro" data-filtro="culto">Cultos</button>
+      <button class="filtro" data-filtro="salud">Salud</button>
+      <button class="filtro" data-filtro="jovenes">Jóvenes</button>
+      <button class="filtro" data-filtro="social">Ayuda social</button>
+    </div>
+
+    <div class="rejilla" style="gap:1rem">
+      <article class="evento" data-categoria="culto">
+        <div class="fecha"><span class="dia-num">08</span><span class="mes">Ago</span></div>
+        <div style="flex:1">
+          <h3>Culto divino y Escuela Sabática</h3>
+          <div class="etiquetas"><span class="chip">Culto</span><span class="chip">9:00 AM</span></div>
+          <p>Templo de Telemán. Estudio de la lección y mensaje central para toda la familia.</p>
+          <button class="btn btn-claro" data-interes="Culto divino y Escuela Sabática">Confirmar asistencia</button>
+        </div>
+      </article>
+
+      <article class="evento" data-categoria="salud">
+        <div class="fecha"><span class="dia-num">16</span><span class="mes">Ago</span></div>
+        <div style="flex:1">
+          <h3>Feria de salud comunitaria</h3>
+          <div class="etiquetas"><span class="chip">Salud</span><span class="chip">8:00 AM</span></div>
+          <p>Parque central de Telemán. Presión arterial, glucosa, orientación nutricional y masajes.</p>
+          <button class="btn btn-claro" data-interes="Feria de salud comunitaria">Confirmar asistencia</button>
+        </div>
+      </article>
+
+      <article class="evento" data-categoria="jovenes">
+        <div class="fecha"><span class="dia-num">23</span><span class="mes">Ago</span></div>
+        <div style="flex:1">
+          <h3>Encuentro juvenil JA</h3>
+          <div class="etiquetas"><span class="chip">Jóvenes</span><span class="chip">3:00 PM</span></div>
+          <p>Alabanza, testimonios y caminata misionera por las aldeas del Polochic.</p>
+          <button class="btn btn-claro" data-interes="Encuentro juvenil JA">Confirmar asistencia</button>
+        </div>
+      </article>
+
+      <article class="evento" data-categoria="social">
+        <div class="fecha"><span class="dia-num">30</span><span class="mes">Ago</span></div>
+        <div style="flex:1">
+          <h3>Jornada de ayuda social</h3>
+          <div class="etiquetas"><span class="chip">Ayuda social</span><span class="chip">9:00 AM</span></div>
+          <p>Entrega de víveres y ropa a familias de comunidades cercanas.</p>
+          <button class="btn btn-claro" data-interes="Jornada de ayuda social">Quiero ser voluntario</button>
+        </div>
+      </article>
+
+      <article class="evento" data-categoria="culto">
+        <div class="fecha"><span class="dia-num">12</span><span class="mes">Sep</span></div>
+        <div style="flex:1">
+          <h3>Campaña de evangelismo «Esperanza Viva»</h3>
+          <div class="etiquetas"><span class="chip">Culto</span><span class="chip">6:30 PM</span></div>
+          <p>Diez noches de estudio de la Biblia, música y oración para toda la comunidad.</p>
+          <button class="btn btn-claro" data-interes="Campaña Esperanza Viva">Confirmar asistencia</button>
+        </div>
+      </article>
+    </div>
+
+    <p id="sin-eventos" hidden class="intro" style="margin-top:1.5rem">No hay eventos en esta categoría por ahora.</p>
+
+    <div class="tarjeta" style="margin-top:3rem">
+      <h2>¿Quieres que te avisemos?</h2>
+      <p>Escríbenos y te compartiremos el calendario mensual de actividades.</p>
+      <a class="btn btn-principal" href="contacto.html">Recibir el calendario</a>
+    </div>
+  </div>
+  </div>
+</main>
+
+<div id="footer-contenedor"></div>
+
+<div id="avisos"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/components/menu.js"></script>
+<script src="js/components/footer.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

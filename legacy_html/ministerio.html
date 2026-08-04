@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ministerios | Iglesia Adventista Telemán</title>
+<meta name="description" content="Ministerios de la Iglesia Adventista de Telemán: jóvenes, niños, música, misión, ayuda social y grupos pequeños en la Zona Polochic." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="pagina-interna">
+<div id="menu-contenedor"></div>
+
+<main>
+  <div class="cabecera-visual" style="background-image:url('imagenes/ministerio-jovenes.png')">
+    <div class="cabecera-visual-inner">
+      <span class="seccion-etiqueta">Ministerios</span>
+      <h1>Ministerios</h1>
+      <p class="intro">Cada ministerio es una puerta abierta para servir. Encuentra el tuyo y únete al trabajo que Dios está haciendo en Telemán y en toda la Zona Polochic.</p>
+    </div>
+  </div>
+
+  <div class="seccion">
+  <div class="contenedor">
+    <div class="rejilla rejilla-3">
+      <article class="tarjeta tarjeta-con-imagen">
+        <img src="imagenes/ministerio-jovenes.png" alt="Jóvenes Adventistas en caminata misionera" width="800" height="450" loading="lazy" />
+        <div class="tarjeta-cuerpo">
+        <h3>Jóvenes Adventistas (JA)</h3>
+        <p>Encuentros cada sábado por la tarde, caminatas misioneras y proyectos de servicio.</p>
+        <p class="dia">Sábado 3:00 PM</p>
+        <button class="btn btn-claro btn-bloque" data-interes="Jóvenes Adventistas (JA)">Quiero participar</button>
+        </div>
+      </article>
+      <article class="tarjeta tarjeta-con-imagen">
+        <img src="imagenes/ministerio-nino.png" alt="Ministerio del Niño en Escuela Sabática" width="800" height="600" loading="lazy" />
+        <div class="tarjeta-cuerpo">
+        <h3>Ministerio del Niño</h3>
+        <p>Escuela sabática por edades, historias bíblicas y actividades creativas.</p>
+        <p class="dia">Sábado 9:00 AM - 11:00 AM</p>
+        <button class="btn btn-claro btn-bloque" data-interes="Ministerio del Niño">Quiero participar</button>
+        </div>
+      </article>
+      <article class="tarjeta tarjeta-con-imagen">
+        <img src="imagenes/ministerio-musica.png" alt="Ministerio de Música y coro adventista" width="800" height="600" loading="lazy" />
+        <div class="tarjeta-cuerpo">
+        <h3>Ministerio de Música</h3>
+        <p>Coro y grupos musicales que acompañan el culto y las campañas evangelísticas.</p>
+        <p class="dia">Viernes 6:00 PM</p>
+        <button class="btn btn-claro btn-bloque" data-interes="Ministerio de Música">Quiero participar</button>
+        </div>
+      </article>
+      <article class="tarjeta tarjeta-con-imagen">
+        <img src="imagenes/servicio-comunidad.png" alt="Acción Solidaria ADRA en la comunidad" width="800" height="600" loading="lazy" />
+        <div class="tarjeta-cuerpo">
+        <h3>Acción Solidaria (ADRA)</h3>
+        <p>Entrega de víveres, apoyo a familias vulnerables y respuesta ante emergencias.</p>
+        <p class="dia">Según programación</p>
+        <button class="btn btn-claro btn-bloque" data-interes="Acción Solidaria (ADRA)">Quiero participar</button>
+        </div>
+      </article>
+      <article class="tarjeta tarjeta-con-imagen">
+        <img src="imagenes/ministerio-grupos.png" alt="Grupos pequeños de estudio bíblico en hogares" width="800" height="600" loading="lazy" />
+        <div class="tarjeta-cuerpo">
+        <h3>Grupos pequeños</h3>
+        <p>Estudios bíblicos en hogares de Telemán y aldeas cercanas del Polochic.</p>
+        <p class="dia">Martes 6:30 PM</p>
+        <button class="btn btn-claro btn-bloque" data-interes="Grupos pequeños">Quiero participar</button>
+        </div>
+      </article>
+      <article class="tarjeta tarjeta-con-imagen">
+        <img src="imagenes/ministerio-mision.png" alt="Misión y evangelismo en comunidades rurales" width="800" height="600" loading="lazy" />
+        <div class="tarjeta-cuerpo">
+        <h3>Misión y evangelismo</h3>
+        <p>Campañas, parejas misioneras y estudios bíblicos personales gratuitos.</p>
+        <p class="dia">Todo el año</p>
+        <button class="btn btn-claro btn-bloque" data-interes="Misión y evangelismo">Quiero participar</button>
+        </div>
+      </article>
+    </div>
+
+    <div class="tarjeta" style="margin-top:3rem">
+      <h2>¿Deseas un estudio bíblico gratuito?</h2>
+      <p>Un hermano de la iglesia puede visitarte en tu hogar o acompañarte en línea.</p>
+      <a class="btn btn-principal" href="contacto.html">Solicitar un estudio bíblico</a>
+    </div>
+  </div>
+  </div>
+</main>
+
+<div id="footer-contenedor"></div>
+
+<div id="avisos"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/components/menu.js"></script>
+<script src="js/components/footer.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
