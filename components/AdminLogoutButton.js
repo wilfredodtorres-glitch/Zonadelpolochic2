@@ -13,7 +13,11 @@ export default function AdminLogoutButton() {
   };
 
   return (
-    <button className="btn btn-secundario" onClick={handleLogout}>
+    <button 
+      className="btn" 
+      onClick={handleLogout}
+      style={{ backgroundColor: '#dc2626', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.375rem', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
+    >
       Cerrar sesión
     </button>
   );
