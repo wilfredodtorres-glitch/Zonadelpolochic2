@@ -41,15 +41,9 @@ export default async function AdminDashboard() {
   return (
     <main style={{ minHeight: '80vh', backgroundColor: '#f9fafb', padding: '2rem 0' }}>
       <div className="contenedor">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <div>
-            <h1>Panel de Administración</h1>
-            <p className="intro">Bienvenido, {user.email}</p>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <a href="/admin/eventos" className="btn btn-principal">Administrar Eventos</a>
-            <AdminLogoutButton />
-          </div>
+        <div style={{ marginBottom: '2rem' }}>
+          <h1>Resumen del Sistema</h1>
+          <p className="intro">Bienvenido, {user.email}</p>
         </div>
 
         <div className="rejilla rejilla-3">

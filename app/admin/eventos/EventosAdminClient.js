@@ -66,13 +66,10 @@ export default function EventosAdminClient({ initialEventos, dbError }) {
   };
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <div>
-          <h1>Administrar Eventos</h1>
-          <p className="intro">Agrega o elimina los eventos que aparecerán en la página principal.</p>
-        </div>
-        <a href="/admin" className="btn btn-borde">Volver al Dashboard</a>
+    <div style={{ padding: '2rem 0' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <h1>Administrar Eventos</h1>
+        <p className="intro">Agrega o elimina los eventos que aparecerán en la página principal.</p>
       </div>
 
       {error && (
