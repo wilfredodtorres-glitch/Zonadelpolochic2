@@ -46,7 +46,10 @@ export default async function AdminDashboard() {
             <h1>Panel de Administración</h1>
             <p className="intro">Bienvenido, {user.email}</p>
           </div>
-          <AdminLogoutButton />
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <a href="/admin/eventos" className="btn btn-principal">Administrar Eventos</a>
+            <AdminLogoutButton />
+          </div>
         </div>
 
         <div className="rejilla rejilla-3">
