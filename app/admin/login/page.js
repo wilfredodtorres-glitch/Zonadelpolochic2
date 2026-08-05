@@ -16,8 +16,17 @@ export default async function LoginPage() {
     redirect("/admin");
   }
   return (
-    <main style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb' }}>
-      <div className="contenedor">
+    <main style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      backgroundImage: "linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.8)), url('/imagenes/hero-teleman.png')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      padding: '2rem'
+    }}>
+      <div className="contenedor" style={{ width: '100%' }}>
         <LoginForm />
       </div>
     </main>
