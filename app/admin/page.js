@@ -23,19 +23,19 @@ export default async function AdminDashboard() {
   const { data: donaciones, error: errDonaciones } = await supabase
     .from("donaciones")
     .select("*")
-    .order("creado_en", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(10);
 
   const { data: mensajes, error: errMensajes } = await supabase
     .from("mensajes_contacto")
     .select("*")
-    .order("creado_en", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(10);
 
   const { data: solicitudes, error: errSolicitudes } = await supabase
     .from("solicitudes_ministerio")
     .select("*")
-    .order("creado_en", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(10);
 
   return (
