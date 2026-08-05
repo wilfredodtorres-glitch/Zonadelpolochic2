@@ -2,8 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AdminLogoutButton from "@/components/AdminLogoutButton";
 
+import BandejaMensajes from "@/components/BandejaMensajes";
+
 export const metadata = {
-  title: "Panel de Administración | Iglesia Adventista Telemán",
+  title: "Bandeja de Mensajes | Iglesia Adventista Telemán",
   robots: {
     index: false,
     follow: false
@@ -20,87 +22,48 @@ export default async function AdminDashboard() {
   }
 
   // Fetching data
-  const { data: donaciones, error: errDonaciones } = await supabase
-    .from("donaciones")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(10);
-
   const { data: mensajes, error: errMensajes } = await supabase
     .from("mensajes_contacto")
     .select("*")
-    .order("created_at", { ascending: false })
-    .limit(10);
+    .order("created_at", { ascending: false });
 
   const { data: solicitudes, error: errSolicitudes } = await supabase
     .from("solicitudes_ministerio")
     .select("*")
-    .order("created_at", { ascending: false })
-    .limit(10);
+    .order("created_at", { ascending: false });
+
+  // Normalizar y combinar
+  const mensajesNormalizados = (mensajes || []).map(m => ({
+    ...m,
+    table: "mensajes_contacto",
+    leido: m.leido || false
+  }));
+
+  const solicitudesNormalizadas = (solicitudes || []).map(s => ({
+    ...s,
+    table: "solicitudes_ministerio",
+    leido: s.leido || false
+  }));
+
+  let todosLosMensajes = [...mensajesNormalizados, ...solicitudesNormalizadas];
+  // Ordenar de forma descendente (más recientes primero) por defecto
+  todosLosMensajes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   return (
-    <main style={{ minHeight: '80vh', backgroundColor: '#f9fafb', padding: '2rem 0' }}>
-      <div className="contenedor">
+    <main style={{ minHeight: '80vh', backgroundColor: '#f9fafb', padding: '2rem' }}>
+      <div className="contenedor" style={{ maxWidth: '1200px' }}>
         <div style={{ marginBottom: '2rem' }}>
-          <h1>Resumen del Sistema</h1>
-          <p className="intro">Bienvenido, {user.email}</p>
+          <h1>Bandeja de Mensajes</h1>
+          <p className="intro">Revisa los mensajes y solicitudes recientes de la comunidad.</p>
         </div>
 
-        <div className="rejilla rejilla-3">
-          <div className="tarjeta">
-            <h2>Últimas Donaciones</h2>
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              {errDonaciones ? (
-                <p style={{ color: 'red' }}>Error: {errDonaciones.message || JSON.stringify(errDonaciones)}</p>
-              ) : donaciones && donaciones.length > 0 ? (
-                donaciones.map((don) => (
-                  <li key={don.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
-                    <strong>Q{don.monto}</strong> - {don.donante} <br />
-                    <small style={{ color: '#666' }}>{don.destino}</small>
-                  </li>
-                ))
-              ) : (
-                <p>No hay donaciones recientes.</p>
-              )}
-            </ul>
+        {(errMensajes || errSolicitudes) && (
+          <div style={{ padding: '1rem', background: '#f8d7da', color: '#721c24', borderRadius: '4px', marginBottom: '1rem' }}>
+            <strong>Error de conexión.</strong> Algunos mensajes podrían no estar cargando.
           </div>
+        )}
 
-          <div className="tarjeta">
-            <h2>Mensajes Recientes</h2>
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              {errMensajes ? (
-                <p style={{ color: 'red' }}>Error: {errMensajes.message || JSON.stringify(errMensajes)}</p>
-              ) : mensajes && mensajes.length > 0 ? (
-                mensajes.map((msg) => (
-                  <li key={msg.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
-                    <strong>{msg.nombre}</strong> ({msg.motivo}) <br />
-                    <small style={{ color: '#666' }}>{msg.correo}</small>
-                  </li>
-                ))
-              ) : (
-                <p>No hay mensajes recientes.</p>
-              )}
-            </ul>
-          </div>
-
-          <div className="tarjeta">
-            <h2>Solicitudes Ministerio</h2>
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '1rem' }}>
-              {errSolicitudes ? (
-                <p style={{ color: 'red' }}>Error: {errSolicitudes.message || JSON.stringify(errSolicitudes)}</p>
-              ) : solicitudes && solicitudes.length > 0 ? (
-                solicitudes.map((sol) => (
-                  <li key={sol.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
-                    <strong>{sol.nombre}</strong> <br />
-                    <small style={{ color: '#666' }}>{sol.ministerio} - {sol.telefono}</small>
-                  </li>
-                ))
-              ) : (
-                <p>No hay solicitudes recientes.</p>
-              )}
-            </ul>
-          </div>
-        </div>
+        <BandejaMensajes mensajesIniciales={todosLosMensajes} />
       </div>
     </main>
   );

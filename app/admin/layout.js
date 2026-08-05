@@ -28,7 +28,10 @@ export default function AdminLayout({ children }) {
         </div>
         <nav style={{ flex: 1, padding: '1rem 0' }}>
           <Link href="/admin" style={navItemStyle("/admin")}>
-            Dashboard
+            Bandeja de mensajes
+          </Link>
+          <Link href="/admin/donaciones" style={navItemStyle("/admin/donaciones")}>
+            Donaciones
           </Link>
           <Link href="/admin/eventos" style={navItemStyle("/admin/eventos")}>
             Eventos
