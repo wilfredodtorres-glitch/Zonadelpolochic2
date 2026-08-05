@@ -22,6 +22,8 @@ export default function ModalParticipar({ isOpen, onClose, ministerio, tipo = "m
       ministerio: formData.get("modal-ministerio"),
       nombre: formData.get("modal-nombre"),
       telefono: formData.get("modal-telefono"),
+      correo: formData.get("modal-correo"),
+      mensaje: formData.get("modal-mensaje") || null,
     };
 
     try {
@@ -49,7 +51,13 @@ export default function ModalParticipar({ isOpen, onClose, ministerio, tipo = "m
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <h2 id="modal-titulo">{tipo === "evento" ? "Confirmar asistencia" : "Unirse a un ministerio"}</h2>
+        <h2 id="modal-titulo">{tipo === "evento" ? "Confirmar asistencia" : "Quiero participar"}</h2>
+        <p className="modal-subtitulo" style={{ color: '#64748b', marginBottom: '0.5rem' }}>
+          Completa tus datos y te contactaremos pronto.
+        </p>
+        <p className="modal-subtitulo" style={{ marginBottom: '1.5rem' }}>
+          <strong>{ministerio}</strong>
+        </p>
 
         {success && (
           <div style={{ padding: '1rem', background: '#d4edda', color: '#155724', borderRadius: '4px', marginBottom: '1rem' }}>
@@ -65,20 +73,25 @@ export default function ModalParticipar({ isOpen, onClose, ministerio, tipo = "m
 
         {!success && (
           <form id="formulario-modal" onSubmit={handleSubmit}>
-            <div className="campo">
-              <label htmlFor="modal-ministerio">{tipo === "evento" ? "Evento seleccionado" : "Ministerio de interés"}</label>
-              <input id="modal-ministerio" name="modal-ministerio" type="text" readOnly value={ministerio || ""} />
-            </div>
+            <input name="modal-ministerio" type="hidden" value={ministerio || ""} />
             <div className="campo">
               <label htmlFor="modal-nombre">Nombre completo *</label>
               <input id="modal-nombre" name="modal-nombre" type="text" required placeholder="Tu nombre" />
             </div>
             <div className="campo">
-              <label htmlFor="modal-telefono">Teléfono (WhatsApp) *</label>
+              <label htmlFor="modal-telefono">Teléfono *</label>
               <input id="modal-telefono" name="modal-telefono" type="tel" required placeholder="+502 0000 0000" />
             </div>
-            <button className="btn btn-secundario" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Enviando..." : (tipo === "evento" ? "Confirmar" : "Enviar solicitud")}
+            <div className="campo">
+              <label htmlFor="modal-correo">Correo electrónico *</label>
+              <input id="modal-correo" name="modal-correo" type="email" required placeholder="tucorreo@ejemplo.com" />
+            </div>
+            <div className="campo">
+              <label htmlFor="modal-mensaje">Mensaje</label>
+              <textarea id="modal-mensaje" name="modal-mensaje" rows="3" placeholder="Cuéntanos por qué te interesa..."></textarea>
+            </div>
+            <button className="btn btn-secundario btn-bloque" style={{ width: '100%' }} type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Enviando..." : "Enviar solicitud"}
             </button>
           </form>
         )}
