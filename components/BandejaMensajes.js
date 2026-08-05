@@ -6,24 +6,37 @@ import { markAsRead } from "@/app/actions";
 export default function BandejaMensajes({ mensajesIniciales }) {
   const [mensajes, setMensajes] = useState(mensajesIniciales);
   const [busqueda, setBusqueda] = useState("");
+  const [fechaFiltro, setFechaFiltro] = useState("");
   const [orden, setOrden] = useState("desc");
   const [mensajeExpandido, setMensajeExpandido] = useState(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const mensajesPorPagina = 10;
 
   const mensajesFiltrados = useMemo(() => {
     let result = [...mensajes];
 
-    // Búsqueda
+    // Búsqueda por texto (nombre, correo, teléfono)
     if (busqueda.trim() !== "") {
       const q = busqueda.toLowerCase();
       result = result.filter(
         (m) =>
           (m.nombre && m.nombre.toLowerCase().includes(q)) ||
           (m.correo && m.correo.toLowerCase().includes(q)) ||
-          (m.telefono && m.telefono.includes(q))
+          (m.telefono && m.telefono.includes(q)) ||
+          (m.mensaje && m.mensaje.toLowerCase().includes(q)) ||
+          (m.motivo && m.motivo.toLowerCase().includes(q))
       );
     }
 
-    // Orden
+    // Búsqueda por fecha
+    if (fechaFiltro) {
+      result = result.filter((m) => {
+        const fechaMsj = new Date(m.created_at).toISOString().split('T')[0];
+        return fechaMsj === fechaFiltro;
+      });
+    }
+
+    // Ordenamiento
     result.sort((a, b) => {
       const dateA = new Date(a.created_at).getTime();
       const dateB = new Date(b.created_at).getTime();
@@ -31,25 +44,25 @@ export default function BandejaMensajes({ mensajesIniciales }) {
     });
 
     return result;
-  }, [mensajes, busqueda, orden]);
+  }, [mensajes, busqueda, fechaFiltro, orden]);
+
+  // Paginación
+  const indiceUltimoMensaje = paginaActual * mensajesPorPagina;
+  const indicePrimerMensaje = indiceUltimoMensaje - mensajesPorPagina;
+  const mensajesPaginados = mensajesFiltrados.slice(indicePrimerMensaje, indiceUltimoMensaje);
+  const totalPaginas = Math.ceil(mensajesFiltrados.length / mensajesPorPagina);
 
   const toggleMensaje = async (id, table, leido) => {
-    // Si se hace clic para cerrar
     if (mensajeExpandido === id) {
       setMensajeExpandido(null);
       return;
     }
-
-    // Expandir
     setMensajeExpandido(id);
 
-    // Si no está leído, marcar como leído en DB y en el estado local
     if (!leido) {
-      // Actualizar estado local inmediatamente para UX
       setMensajes((prev) =>
         prev.map((m) => (m.id === id ? { ...m, leido: true } : m))
       );
-      // Llamar a Server Action
       await markAsRead(id, table);
     }
   };
@@ -60,133 +73,150 @@ export default function BandejaMensajes({ mensajesIniciales }) {
       day: "numeric",
       month: "short",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
   return (
-    <div className="bandeja-mensajes" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '600px' }}>
+    <div className="bandeja-mensajes" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
-      {/* Barra superior estilo Gmail */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', background: '#f1f3f4', borderRadius: '24px', padding: '0.5rem 1rem', width: '100%', maxWidth: '600px' }}>
-          <svg style={{ width: '20px', height: '20px', color: '#5f6368', marginRight: '0.75rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-          <input
-            type="text"
-            placeholder="Buscar en el correo"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '0.95rem', color: '#202124' }}
-          />
-        </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', fontSize: '0.85rem', color: '#5f6368', marginLeft: '1rem' }}>
-          <span>1-{mensajesFiltrados.length} de {mensajes.length}</span>
-          <select 
-            value={orden} 
-            onChange={(e) => setOrden(e.target.value)}
-            style={{ marginLeft: '1rem', border: 'none', background: 'transparent', color: '#5f6368', cursor: 'pointer', outline: 'none' }}
-          >
-            <option value="desc">Más recientes</option>
-            <option value="asc">Más antiguos</option>
-          </select>
+      {/* Controles de Búsqueda y Filtros */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+          
+          <div style={{ flex: '1 1 300px', display: 'flex', alignItems: 'center', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+            <svg style={{ width: '20px', height: '20px', color: '#64748b', marginRight: '0.5rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar por nombre, correo, teléfono o contenido..."
+              value={busqueda}
+              onChange={(e) => { setBusqueda(e.target.value); setPaginaActual(1); }}
+              style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '0.95rem', color: '#334155' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '500' }}>Fecha:</label>
+            <input 
+              type="date" 
+              value={fechaFiltro}
+              onChange={(e) => { setFechaFiltro(e.target.value); setPaginaActual(1); }}
+              style={{ padding: '0.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#334155', background: '#f8fafc' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '500' }}>Orden:</label>
+            <select 
+              value={orden} 
+              onChange={(e) => { setOrden(e.target.value); setPaginaActual(1); }}
+              style={{ padding: '0.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#334155', background: '#f8fafc', cursor: 'pointer' }}
+            >
+              <option value="desc">Más recientes</option>
+              <option value="asc">Más antiguos</option>
+            </select>
+          </div>
+          
         </div>
       </div>
 
-      {/* Lista de correos estilo Gmail */}
-      <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e5e7eb', flex: 1, overflow: 'hidden', boxShadow: '0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)' }}>
-        
-        {/* Pestañas (Opcional, simula Gmail) */}
-        <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb', padding: '0 1rem' }}>
-          <div style={{ padding: '1rem', borderBottom: '3px solid #1a73e8', color: '#1a73e8', fontWeight: 'bold', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <svg style={{ width: '18px', height: '18px' }} fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
-            Principal
-          </div>
-        </div>
-
+      {/* Lista de Mensajes */}
+      <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
         {mensajesFiltrados.length === 0 ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: '#5f6368' }}>
-            No hay mensajes que coincidan con la búsqueda.
+          <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#64748b' }}>
+            <svg style={{ width: '48px', height: '48px', margin: '0 auto 1rem', opacity: 0.5 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+            </svg>
+            <p style={{ fontSize: '1.1rem' }}>No hay mensajes que coincidan con tu búsqueda.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {mensajesFiltrados.map((m) => {
+            {mensajesPaginados.map((m) => {
               const isExpandido = mensajeExpandido === m.id;
               const isLeido = m.leido;
-              const sender = m.nombre;
               const subject = m.table === "mensajes_contacto" ? "Mensaje de Contacto" : `Solicitud: ${m.ministerio}`;
-              const snippet = m.mensaje || m.motivo || "Sin mensaje...";
+              const snippet = m.mensaje || m.motivo || "Sin mensaje adicional";
               
               return (
-                <div key={m.id} style={{ display: 'flex', flexDirection: 'column' }}>
-                  {/* Fila compacta estilo Gmail */}
+                <div key={m.id} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid #e2e8f0' }}>
+                  
+                  {/* Fila del mensaje */}
                   <div 
                     onClick={() => toggleMensaje(m.id, m.table, m.leido)}
                     style={{ 
                       display: 'flex', 
                       alignItems: 'center',
-                      padding: '0.35rem 1rem', 
+                      padding: '1rem 1.5rem', 
                       cursor: 'pointer',
-                      borderBottom: '1px solid #f1f3f4',
-                      background: isExpandido ? '#f8f9fa' : (isLeido ? '#f2f6fc' : '#ffffff'),
-                      color: isLeido ? '#5f6368' : '#202124',
-                      fontWeight: isLeido ? 'normal' : '700',
-                      fontSize: '0.875rem'
+                      background: isExpandido ? '#f8fafc' : (isLeido ? '#ffffff' : '#f1f5f9'),
+                      transition: 'all 0.2s ease',
+                      borderLeft: !isLeido && !isExpandido ? '4px solid #3b82f6' : '4px solid transparent',
                     }}
                     onMouseEnter={(e) => {
-                      if(!isExpandido) e.currentTarget.style.boxShadow = 'inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15)';
-                      e.currentTarget.style.zIndex = '1';
+                      if (!isExpandido) e.currentTarget.style.background = '#f8fafc';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = 'none';
-                      e.currentTarget.style.zIndex = '0';
+                      if (!isExpandido) e.currentTarget.style.background = isLeido ? '#ffffff' : '#f1f5f9';
                     }}
                   >
-                    {/* Remitente */}
-                    <div style={{ width: '200px', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: '1rem' }}>
-                      {sender}
-                    </div>
                     
-                    {/* Asunto y Snippet */}
-                    <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
-                      <span>{subject}</span>
-                      <span style={{ color: '#5f6368', margin: '0 0.5rem', fontWeight: 'normal' }}>-</span>
-                      <span style={{ color: '#5f6368', fontWeight: 'normal' }}>{snippet}</span>
+                    {/* Contenido principal fila */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem', overflow: 'hidden', paddingRight: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{ fontWeight: isLeido ? '600' : '700', color: '#0f172a', fontSize: '1.05rem' }}>
+                          {m.nombre}
+                        </span>
+                        {!isLeido && (
+                          <span style={{ background: '#3b82f6', color: 'white', fontSize: '0.7rem', padding: '0.1rem 0.5rem', borderRadius: '12px', fontWeight: 'bold' }}>
+                            NUEVO
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#475569', fontSize: '0.9rem', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                        <span style={{ fontWeight: '500', color: '#334155' }}>{subject}</span>
+                        <span>—</span>
+                        <span style={{ opacity: 0.8 }}>{snippet}</span>
+                      </div>
                     </div>
 
-                    {/* Fecha */}
-                    <div style={{ width: '80px', flexShrink: 0, textAlign: 'right', fontWeight: isLeido ? 'normal' : '700' }}>
+                    {/* Fecha a la derecha */}
+                    <div style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: isLeido ? 'normal' : '600', whiteSpace: 'nowrap' }}>
                       {formatearFecha(m.created_at)}
                     </div>
                   </div>
 
-                  {/* Vista expandida (Cuerpo del correo) */}
+                  {/* Detalle expandido */}
                   {isExpandido && (
-                    <div style={{ padding: '2rem 3rem', background: '#ffffff', borderBottom: '1px solid #e5e7eb', cursor: 'default' }}>
-                      <h2 style={{ fontSize: '1.3rem', margin: '0 0 1.5rem 0', fontWeight: 'normal', color: '#202124' }}>{subject}</h2>
-                      
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#1a73e8', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', marginRight: '1rem' }}>
-                          {sender.charAt(0).toUpperCase()}
+                    <div style={{ padding: '2rem', background: '#f8fafc', borderTop: '1px dashed #cbd5e1' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '1.5rem' }}>
+                        <div>
+                          <p style={{ fontSize: '0.8rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', fontWeight: 'bold' }}>Remitente</p>
+                          <p style={{ color: '#0f172a', fontWeight: '500' }}>{m.nombre}</p>
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 'bold', color: '#202124' }}>{sender}</div>
-                          <div style={{ fontSize: '0.85rem', color: '#5f6368' }}>
-                            {m.correo ? <a href={`mailto:${m.correo}`} style={{ color: '#5f6368', textDecoration: 'none' }}>{m.correo}</a> : 'Sin correo'} 
-                            {' • '} 
-                            {m.telefono ? <a href={`tel:${m.telefono}`} style={{ color: '#5f6368', textDecoration: 'none' }}>{m.telefono}</a> : 'Sin teléfono'}
-                          </div>
+                        <div>
+                          <p style={{ fontSize: '0.8rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', fontWeight: 'bold' }}>Correo Electrónico</p>
+                          <p>
+                            {m.correo ? <a href={`mailto:${m.correo}`} style={{ color: '#2563eb', textDecoration: 'none' }}>{m.correo}</a> : <span style={{ color: '#94a3b8' }}>No proporcionado</span>}
+                          </p>
                         </div>
-                        <div style={{ fontSize: '0.85rem', color: '#5f6368' }}>
-                          {new Date(m.created_at).toLocaleString("es-ES", { dateStyle: 'long', timeStyle: 'short' })}
+                        <div>
+                          <p style={{ fontSize: '0.8rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', fontWeight: 'bold' }}>Teléfono</p>
+                          <p>
+                            {m.telefono ? <a href={`tel:${m.telefono}`} style={{ color: '#2563eb', textDecoration: 'none' }}>{m.telefono}</a> : <span style={{ color: '#94a3b8' }}>No proporcionado</span>}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '0.8rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', fontWeight: 'bold' }}>Fecha de envío</p>
+                          <p style={{ color: '#0f172a' }}>{new Date(m.created_at).toLocaleString("es-ES", { dateStyle: 'long', timeStyle: 'short' })}</p>
                         </div>
                       </div>
 
-                      <div style={{ color: '#202124', fontSize: '0.95rem', lineHeight: '1.6', whiteSpace: 'pre-wrap', marginLeft: '3.5rem' }}>
-                        {m.mensaje || m.motivo || "No dejó mensaje adicional."}
+                      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                        <p style={{ fontSize: '0.8rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', fontWeight: 'bold' }}>Mensaje</p>
+                        <p style={{ color: '#334155', lineHeight: '1.7', whiteSpace: 'pre-wrap' }}>
+                          {m.mensaje || m.motivo || "No se adjuntó ningún mensaje adicional."}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -196,6 +226,35 @@ export default function BandejaMensajes({ mensajesIniciales }) {
           </div>
         )}
       </div>
+
+      {/* Paginación */}
+      {totalPaginas > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', padding: '1rem 1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ color: '#64748b', fontSize: '0.9rem' }}>
+            Mostrando <strong>{indicePrimerMensaje + 1}</strong> a <strong>{Math.min(indiceUltimoMensaje, mensajesFiltrados.length)}</strong> de <strong>{mensajesFiltrados.length}</strong> mensajes
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button 
+              onClick={() => setPaginaActual(p => Math.max(1, p - 1))}
+              disabled={paginaActual === 1}
+              style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid #cbd5e1', background: paginaActual === 1 ? '#f8fafc' : 'white', color: paginaActual === 1 ? '#94a3b8' : '#334155', cursor: paginaActual === 1 ? 'not-allowed' : 'pointer' }}
+            >
+              Anterior
+            </button>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '0 0.5rem', fontWeight: '600', color: '#0f172a' }}>
+              {paginaActual} / {totalPaginas}
+            </div>
+            <button 
+              onClick={() => setPaginaActual(p => Math.min(totalPaginas, p + 1))}
+              disabled={paginaActual === totalPaginas}
+              style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid #cbd5e1', background: paginaActual === totalPaginas ? '#f8fafc' : 'white', color: paginaActual === totalPaginas ? '#94a3b8' : '#334155', cursor: paginaActual === totalPaginas ? 'not-allowed' : 'pointer' }}
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
