@@ -1,5 +1,6 @@
 import LoginForm from "@/components/LoginForm";
-
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 export const metadata = {
   title: "Acceso Administrativo | Iglesia Adventista Telemán",
   robots: {
