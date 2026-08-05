@@ -43,13 +43,11 @@ export default function ModalParticipar({ isOpen, onClose, ministerio, tipo = "m
   };
 
   return (
-    <div className="modal modal-abierto" id="modal-participar" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
-      <div className="modal-contenido tarjeta formulario">
+    <div className="modal" id="modal-participar" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <button className="modal-fondo" type="button" aria-label="Cerrar formulario" onClick={onClose}></button>
+      <div className="modal-panel">
         <button className="modal-cerrar" aria-label="Cerrar modal" onClick={onClose}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
+          &times;
         </button>
         <h2 id="modal-titulo">{tipo === "evento" ? "Confirmar asistencia" : "Quiero participar"}</h2>
         <p className="modal-subtitulo" style={{ color: '#64748b', marginBottom: '0.5rem' }}>
@@ -72,7 +70,7 @@ export default function ModalParticipar({ isOpen, onClose, ministerio, tipo = "m
         )}
 
         {!success && (
-          <form id="formulario-modal" onSubmit={handleSubmit}>
+          <form className="formulario" onSubmit={handleSubmit}>
             <input name="modal-ministerio" type="hidden" value={ministerio || ""} />
             <div className="campo">
               <label htmlFor="modal-nombre">Nombre completo *</label>
