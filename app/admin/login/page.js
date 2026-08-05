@@ -21,7 +21,7 @@ export default async function LoginPage() {
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center', 
-      backgroundImage: "linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.8)), url('/imagenes/hero-teleman.png')",
+      backgroundImage: "linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.8)), url('/imagenes/fondo-login.png')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       padding: '2rem'
