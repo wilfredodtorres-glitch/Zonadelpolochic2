@@ -1,69 +1,84 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import AdminLogoutButton from "@/components/AdminLogoutButton";
-
-import BandejaMensajes from "@/components/BandejaMensajes";
+import Link from "next/link";
 
 export const metadata = {
-  title: "Bandeja de Mensajes | Iglesia Adventista Telemán",
-  robots: {
-    index: false,
-    follow: false
-  }
+  title: "Dashboard | Admin",
+  robots: { index: false, follow: false }
 };
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
-
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/admin/login");
   }
 
-  // Fetching data
-  const { data: mensajes, error: errMensajes } = await supabase
-    .from("mensajes_contacto")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const { data: solicitudes, error: errSolicitudes } = await supabase
-    .from("solicitudes_ministerio")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  // Normalizar y combinar
-  const mensajesNormalizados = (mensajes || []).map(m => ({
-    ...m,
-    table: "mensajes_contacto",
-    leido: m.leido || false
-  }));
-
-  const solicitudesNormalizadas = (solicitudes || []).map(s => ({
-    ...s,
-    table: "solicitudes_ministerio",
-    leido: s.leido || false
-  }));
-
-  let todosLosMensajes = [...mensajesNormalizados, ...solicitudesNormalizadas];
-  // Ordenar de forma descendente (más recientes primero) por defecto
-  todosLosMensajes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  // Fetch counts in parallel
+  const [mensajes, anuncios, sermones, galeria] = await Promise.all([
+    supabase.from("mensajes_contacto").select("*", { count: "exact", head: true }),
+    supabase.from("anuncios").select("*", { count: "exact", head: true }),
+    supabase.from("sermones").select("*", { count: "exact", head: true }),
+    supabase.from("galeria").select("*", { count: "exact", head: true })
+  ]);
 
   return (
-    <main style={{ minHeight: '80vh', backgroundColor: '#f9fafb', padding: '2rem' }}>
-      <div className="contenedor" style={{ maxWidth: '1200px' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <h1>Bandeja de Mensajes</h1>
-          <p className="intro">Revisa los mensajes y solicitudes recientes de la comunidad.</p>
+    <main style={{ minHeight: '80vh', padding: '2rem' }}>
+      <div className="seccion-cabecera" style={{ marginBottom: '2rem' }}>
+        <h1>Panel de Control Principal</h1>
+        <p className="intro">Resumen general de tu sitio web e iglesia local.</p>
+      </div>
+
+      {/* Tarjetas de Estadísticas */}
+      <div className="rejilla rejilla-2" style={{ marginBottom: '3rem' }}>
+        <div className="tarjeta" style={{ borderLeft: '4px solid #3b82f6' }}>
+          <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Mensajes Recibidos</h3>
+          <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0' }}>{mensajes.count || 0}</p>
         </div>
+        <div className="tarjeta" style={{ borderLeft: '4px solid #f59e0b' }}>
+          <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Anuncios Publicados</h3>
+          <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0' }}>{anuncios.count || 0}</p>
+        </div>
+        <div className="tarjeta" style={{ borderLeft: '4px solid #10b981' }}>
+          <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Sermones</h3>
+          <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0' }}>{sermones.count || 0}</p>
+        </div>
+        <div className="tarjeta" style={{ borderLeft: '4px solid #ec4899' }}>
+          <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Fotos en Galería</h3>
+          <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0' }}>{galeria.count || 0}</p>
+        </div>
+      </div>
 
-        {(errMensajes || errSolicitudes) && (
-          <div style={{ padding: '1rem', background: '#f8d7da', color: '#721c24', borderRadius: '4px', marginBottom: '1rem' }}>
-            <strong>Error de conexión.</strong> Algunos mensajes podrían no estar cargando.
-          </div>
-        )}
+      {/* Accesos Directos */}
+      <div style={{ marginBottom: '3rem' }}>
+        <div className="seccion-cabecera">
+          <h2>Acciones Rápidas</h2>
+        </div>
+        <div className="hero-acciones" style={{ justifyContent: 'flex-start' }}>
+          <Link href="/admin/anuncios" className="btn btn-principal">
+            Redactar Anuncio
+          </Link>
+          <Link href="/admin/sermones" className="btn btn-principal">
+            Subir Sermón
+          </Link>
+          <Link href="/admin/galeria" className="btn btn-principal">
+            Agregar Fotos
+          </Link>
+          <Link href="/admin/mensajes" className="btn btn-borde">
+            Leer Mensajes
+          </Link>
+        </div>
+      </div>
 
-        <BandejaMensajes mensajesIniciales={todosLosMensajes} />
+      {/* Actividad Reciente */}
+      <div>
+        <div className="seccion-cabecera">
+          <h2>Estado del Sistema</h2>
+        </div>
+        <div className="tarjeta">
+          <p style={{ margin: 0, color: '#4b5563', fontWeight: '500' }}>El sistema está funcionando de manera óptima y conectado a la base de datos.</p>
+        </div>
       </div>
     </main>
   );

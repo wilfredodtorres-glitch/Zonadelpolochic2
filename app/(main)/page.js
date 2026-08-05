@@ -1,8 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
 import RadioPlayer from "@/components/RadioPlayer";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: anunciosDb } = await supabase
+    .from("anuncios")
+    .select("*")
+    .eq("activo", true)
+    .order("importante", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(4);
+
+  const { data: galeriaDb } = await supabase
+    .from("galeria")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(6);
+
   return (
     <main>
       <section className="hero">
@@ -97,6 +113,68 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {anunciosDb && anunciosDb.length > 0 && (
+        <section className="seccion" style={{ background: '#f8fafc' }}>
+          <div className="contenedor">
+            <div className="seccion-cabecera">
+              <span className="seccion-etiqueta">Anuncios</span>
+              <h2>Boletín y Avisos</h2>
+              <p className="intro">
+                Mantente al tanto de las últimas noticias, horarios especiales y actividades de nuestra congregación.
+              </p>
+            </div>
+            <div className="rejilla rejilla-2">
+              {anunciosDb.map((anuncio) => (
+                <article 
+                  key={anuncio.id} 
+                  className="tarjeta" 
+                  style={{ borderLeft: anuncio.importante ? '4px solid #ef4444' : '4px solid #3b82f6' }}
+                >
+                  <h3 style={{ color: anuncio.importante ? '#b91c1c' : 'inherit' }}>
+                    {anuncio.titulo}
+                  </h3>
+                  <p style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem', color: '#475569' }}>
+                    {anuncio.contenido}
+                  </p>
+                  <small style={{ color: '#94a3b8' }}>
+                    Publicado el: {new Date(anuncio.created_at).toLocaleDateString("es-ES", { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </small>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {galeriaDb && galeriaDb.length > 0 && (
+        <section className="seccion">
+          <div className="contenedor">
+            <div className="seccion-cabecera">
+              <span className="seccion-etiqueta">Galería</span>
+              <h2>Nuestra Comunidad en Acción</h2>
+              <p className="intro">Momentos especiales de adoración, bautismos y servicio a la comunidad en la Zona Polochic.</p>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+              {galeriaDb.map(foto => (
+                <div key={foto.id} style={{ borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                  <div style={{ width: '100%', paddingTop: '75%', position: 'relative' }}>
+                    <img 
+                      src={foto.url_imagen} 
+                      alt={foto.titulo} 
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} 
+                      loading="lazy"
+                    />
+                  </div>
+                  <div style={{ padding: '1rem', background: 'white' }}>
+                    <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem' }}>{foto.titulo}</h3>
+                    {foto.descripcion && <p style={{ margin: 0, color: '#4b5563', fontSize: '0.9rem' }}>{foto.descripcion}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="seccion radio-seccion">
         <div className="contenedor">

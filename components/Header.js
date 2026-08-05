@@ -34,6 +34,7 @@ export default function Header() {
         <nav className="nav" aria-label="Menú principal">
           <Link href="/">Inicio</Link>
           <Link href="/ministerio">Ministerio</Link>
+          <Link href="/sermones">Sermones</Link>
           <Link href="/salud">Salud</Link>
           <Link href="/eventos">Eventos</Link>
           <Link href="/contacto">Contacto</Link>

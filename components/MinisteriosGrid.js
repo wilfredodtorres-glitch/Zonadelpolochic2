@@ -2,73 +2,72 @@
 import { useState } from "react";
 import ModalParticipar from "@/components/ModalParticipar";
 
-const ministerios = [
+const fallbackMinisterios = [
   {
-    titulo: "Jóvenes Adventistas (JA)",
+    nombre: "Jóvenes Adventistas (JA)",
     descripcion: "Encuentros cada sábado por la tarde, caminatas misioneras y proyectos de servicio.",
     dia: "Sábado 3:00 PM",
-    imagen: "/imagenes/ministerio-jovenes.png",
-    alt: "Jóvenes Adventistas en caminata misionera"
+    icono: "jovenes"
   },
   {
-    titulo: "Ministerio del Niño",
+    nombre: "Ministerio del Niño",
     descripcion: "Escuela sabática por edades, historias bíblicas y actividades creativas.",
     dia: "Sábado 9:00 AM - 11:00 AM",
-    imagen: "/imagenes/ministerio-nino.png",
-    alt: "Ministerio del Niño en Escuela Sabática"
+    icono: "nino"
   },
   {
-    titulo: "Ministerio de Música",
+    nombre: "Ministerio de Música",
     descripcion: "Coro y grupos musicales que acompañan el culto y las campañas evangelísticas.",
     dia: "Viernes 6:00 PM",
-    imagen: "/imagenes/ministerio-musica.png",
-    alt: "Ministerio de Música y coro adventista"
-  },
-  {
-    titulo: "Acción Solidaria (ADRA)",
-    descripcion: "Entrega de víveres, apoyo a familias vulnerables y respuesta ante emergencias.",
-    dia: "Según programación",
-    imagen: "/imagenes/servicio-comunidad.png",
-    alt: "Acción Solidaria ADRA en la comunidad"
-  },
-  {
-    titulo: "Grupos pequeños",
-    descripcion: "Estudios bíblicos en hogares de Telemán y aldeas cercanas del Polochic.",
-    dia: "Martes 6:30 PM",
-    imagen: "/imagenes/ministerio-grupos.png",
-    alt: "Grupos pequeños de estudio bíblico en hogares"
-  },
-  {
-    titulo: "Misión y evangelismo",
-    descripcion: "Campañas, parejas misioneras y estudios bíblicos personales gratuitos.",
-    dia: "Todo el año",
-    imagen: "/imagenes/ministerio-mision.png",
-    alt: "Misión y evangelismo en comunidades rurales"
+    icono: "musica"
   }
 ];
 
-export default function MinisteriosGrid() {
+export default function MinisteriosGrid({ data = [] }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMinisterio, setSelectedMinisterio] = useState(null);
+
+  const ministeriosAMostrar = data.length > 0 ? data : fallbackMinisterios;
 
   const handleOpen = (ministerio) => {
     setSelectedMinisterio(ministerio);
     setModalOpen(true);
   };
 
+  const getImagenUrl = (icono) => {
+    // If it looks like a URL or an absolute path, return it directly
+    if (icono && (icono.startsWith("http") || icono.startsWith("/"))) {
+      return icono;
+    }
+    // Basic mapping for legacy icons if they use the default ones
+    const map = {
+      "jovenes": "/imagenes/ministerio-jovenes.png",
+      "nino": "/imagenes/ministerio-nino.png",
+      "musica": "/imagenes/ministerio-musica.png",
+      "grupos": "/imagenes/ministerio-grupos.png",
+      "mision": "/imagenes/ministerio-mision.png",
+      "servicio": "/imagenes/servicio-comunidad.png"
+    };
+    return map[icono] || map["jovenes"]; // Fallback to jovenes
+  };
+
   return (
     <>
       <div className="rejilla rejilla-3">
-        {ministerios.map((min, index) => (
+        {ministeriosAMostrar.map((min, index) => (
           <article className="tarjeta tarjeta-con-imagen" key={index}>
-            <img src={min.imagen} alt={min.alt} width="800" height="450" loading="lazy" style={{ objectFit: 'cover' }} />
+            <img 
+              src={getImagenUrl(min.icono)} 
+              alt={min.nombre} 
+              width="800" height="450" loading="lazy" style={{ objectFit: 'cover' }} 
+            />
             <div className="tarjeta-cuerpo">
-              <h3>{min.titulo}</h3>
+              <h3>{min.nombre}</h3>
               <p>{min.descripcion}</p>
-              <p className="dia">{min.dia}</p>
+              {min.lider && <p className="dia">Líder: {min.lider}</p>}
               <button 
                 className="btn btn-claro btn-bloque" 
-                onClick={() => handleOpen(min.titulo)}
+                onClick={() => handleOpen(min.nombre)}
               >
                 Quiero participar
               </button>
