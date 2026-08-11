@@ -2,22 +2,52 @@
 
 import { useState } from "react";
 import { createGaleriaItem, deleteGaleriaItem } from "@/app/admin/galeria/actions";
+import imageCompression from "browser-image-compression";
+import toast from "react-hot-toast";
 
 export default function GaleriaManager({ fotosIniciales }) {
   const [fotos, setFotos] = useState(fotosIniciales);
   const [cargando, setCargando] = useState(false);
+  const [preview, setPreview] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
     setCargando(true);
     const formData = new FormData(e.target);
 
+    const imageFile = formData.get("imagen");
+    if (imageFile && imageFile.size > 0 && imageFile.type.startsWith("image/")) {
+      try {
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(imageFile, options);
+        formData.set("imagen", new File([compressedFile], imageFile.name, { type: compressedFile.type }));
+      } catch (error) {
+        console.error("Error comprimiendo imagen:", error);
+        toast.error("Error al comprimir la imagen. Se intentará subir original.");
+      }
+    }
+
     const res = await createGaleriaItem(formData);
     
     if (res.error) {
-      alert("Error: " + res.error);
+      toast.error(res.error);
     } else {
-      alert("Foto agregada a la galería");
+      toast.success("Foto agregada a la galería");
+      setPreview(null);
+      e.target.reset();
       window.location.reload();
     }
     setCargando(false);
@@ -27,8 +57,11 @@ export default function GaleriaManager({ fotosIniciales }) {
     if (confirm("¿Estás seguro de eliminar esta foto?")) {
       setCargando(true);
       const res = await deleteGaleriaItem(id);
-      if (res.error) alert("Error: " + res.error);
-      else window.location.reload();
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success("Foto eliminada");
+        window.location.reload();
+      }
       setCargando(false);
     }
   }
@@ -55,9 +88,13 @@ export default function GaleriaManager({ fotosIniciales }) {
               name="imagen" 
               type="file" 
               accept="image/*"
+              onChange={handleImageChange}
               required 
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '4px', background: '#f9fafb' }} 
             />
+            {preview && (
+              <div style={{ marginTop: '0.5rem', borderRadius: '4px', overflow: 'hidden', border: '1px solid #e5e7eb', width: '100%', height: '150px', backgroundImage: `url(${preview})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+            )}
           </div>
           <div>
             <label>Descripción (Opcional)</label>
@@ -70,7 +107,7 @@ export default function GaleriaManager({ fotosIniciales }) {
           
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
             <button type="submit" disabled={cargando} style={{ padding: '0.5rem 1rem', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: cargando ? 'not-allowed' : 'pointer' }}>
-              {cargando ? "Guardando..." : "Agregar a Galería"}
+              {cargando ? "Comprimiendo y Guardando..." : "Agregar a Galería"}
             </button>
           </div>
         </form>

@@ -45,7 +45,10 @@ export default async function SermonesPage() {
                     <span>Por: <strong>{sermon.predicador}</strong></span>
                     <span>{new Date(sermon.fecha).toLocaleDateString("es-ES", { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   </div>
-                  <p style={{ color: '#4b5563', fontSize: '0.95rem' }}>{sermon.descripcion}</p>
+                  <div 
+                    style={{ color: '#4b5563', fontSize: '0.95rem', overflowWrap: 'break-word' }} 
+                    dangerouslySetInnerHTML={{ __html: sermon.descripcion }} 
+                  />
                 </div>
               </article>
             ))}

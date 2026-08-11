@@ -21,6 +21,10 @@ export async function createGaleriaItem(formData) {
   if (!imagenFile || imagenFile.size === 0) {
     return { error: "Debes seleccionar una imagen." };
   }
+  
+  if (!imagenFile.type.startsWith("image/")) {
+    return { error: "Formato inválido. Por favor, sube solo imágenes (.jpg, .png, .webp)." };
+  }
 
   const fileName = `galeria/${Date.now()}-${imagenFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
   

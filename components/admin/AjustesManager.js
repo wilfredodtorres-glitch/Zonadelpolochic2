@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { guardarConfiguracion } from "@/app/admin/ajustes/actions";
+import toast from "react-hot-toast";
 
 export default function AjustesManager({ configInicial }) {
   const [cargando, setCargando] = useState(false);
@@ -14,9 +15,9 @@ export default function AjustesManager({ configInicial }) {
     const res = await guardarConfiguracion(formData);
     
     if (res.error) {
-      alert("Error al guardar: " + res.error);
+      toast.error("Error al guardar: " + res.error);
     } else {
-      alert("Configuraciones guardadas exitosamente.");
+      toast.success("Configuraciones guardadas exitosamente.");
     }
     setCargando(false);
   }

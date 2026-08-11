@@ -1,17 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createSermon, updateSermon, deleteSermon } from "@/app/admin/sermones/actions";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+import toast from "react-hot-toast";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const quillModules = {
+  toolbar: [
+    ['bold', 'italic'],
+    [{'list': 'ordered'}, {'list': 'bullet'}],
+    ['link']
+  ]
+};
 
 export default function SermonesManager({ sermonesIniciales }) {
   const [sermones, setSermones] = useState(sermonesIniciales);
   const [editando, setEditando] = useState(null);
   const [cargando, setCargando] = useState(false);
+  const [descripcion, setDescripcion] = useState("");
+
+  useEffect(() => {
+    if (editando) {
+      setDescripcion(editando.descripcion || "");
+    } else {
+      setDescripcion("");
+    }
+  }, [editando]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setCargando(true);
     const formData = new FormData(e.target);
+    formData.set("descripcion", descripcion);
 
     let res;
     if (editando) {
@@ -21,9 +44,9 @@ export default function SermonesManager({ sermonesIniciales }) {
     }
 
     if (res.error) {
-      alert("Error: " + res.error);
+      toast.error(res.error);
     } else {
-      alert(editando ? "Sermón actualizado" : "Sermón publicado");
+      toast.success(editando ? "Sermón actualizado" : "Sermón publicado");
       window.location.reload();
     }
     setCargando(false);
@@ -33,8 +56,11 @@ export default function SermonesManager({ sermonesIniciales }) {
     if (confirm("¿Estás seguro de eliminar este sermón?")) {
       setCargando(true);
       const res = await deleteSermon(id);
-      if (res.error) alert("Error: " + res.error);
-      else window.location.reload();
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success("Sermón eliminado");
+        window.location.reload();
+      }
       setCargando(false);
     }
   }
@@ -86,17 +112,18 @@ export default function SermonesManager({ sermonesIniciales }) {
             />
           </div>
           <div>
-            <label>Descripción corta o versículo base</label>
-            <textarea 
-              name="descripcion" 
-              rows="3" 
-              defaultValue={editando?.descripcion || ""} 
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '4px' }} 
+            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Descripción corta o versículo base</label>
+            <ReactQuill 
+              theme="snow"
+              value={descripcion}
+              onChange={setDescripcion}
+              modules={quillModules}
+              style={{ background: 'white' }}
             />
           </div>
           
           {editando && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>
               <input 
                 name="activo" 
                 type="checkbox" 
@@ -144,12 +171,13 @@ export default function SermonesManager({ sermonesIniciales }) {
                     ></iframe>
                   </div>
                 )}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden' }}>
                   <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#111827' }}>
                     {s.titulo} {!s.activo && <span style={{ fontSize: '0.75rem', background: '#e5e7eb', padding: '0.1rem 0.5rem', borderRadius: '12px' }}>Oculto</span>}
                   </h3>
                   <p style={{ margin: '0.25rem 0', color: '#4b5563', fontSize: '0.9rem' }}>Predicador: {s.predicador}</p>
                   <p style={{ margin: '0.25rem 0', color: '#6b7280', fontSize: '0.85rem' }}>Fecha: {new Date(s.fecha).toLocaleDateString()}</p>
+                  <div style={{ margin: '0.25rem 0', color: '#4b5563', fontSize: '0.85rem', overflowWrap: 'break-word', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: s.descripcion }} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flexShrink: 0, justifyContent: 'center' }}>
                   <button onClick={() => setEditando(s)} style={{ padding: '0.4rem 0.8rem', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Editar</button>

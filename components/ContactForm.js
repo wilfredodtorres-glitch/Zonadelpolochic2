@@ -1,58 +1,48 @@
 "use client";
-import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { submitContact } from "@/app/(main)/contacto/actions";
+import toast from "react-hot-toast";
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
 
-  const supabase = createClient();
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (siteKey && !recaptchaToken) {
+      toast.error("Por favor completa el reCAPTCHA.");
+      return;
+    }
+
     setIsSubmitting(true);
-    setSuccess(false);
-    setError(false);
 
     const formData = new FormData(e.target);
-    const datos = {
-      nombre: formData.get("nombre"),
-      telefono: formData.get("telefono") || null,
-      correo: formData.get("correo"),
-      motivo: formData.get("motivo"),
-      mensaje: formData.get("mensaje"),
-    };
+    if (siteKey) formData.append("recaptchaToken", recaptchaToken);
 
-    try {
-      const { error: dbError } = await supabase.from("mensajes_contacto").insert([datos]);
-      if (dbError) throw dbError;
-      setSuccess(true);
+    const result = await submitContact(formData);
+
+    if (result.error) {
+      toast.error(result.error);
+      if (siteKey && recaptchaRef.current) recaptchaRef.current.reset();
+      setRecaptchaToken(null);
+    } else {
+      toast.success("Mensaje enviado. Gracias por escribirnos.");
       e.target.reset();
-    } catch (err) {
-      console.error("Error al enviar contacto:", err);
-      setError(true);
-    } finally {
-      setIsSubmitting(false);
+      if (siteKey && recaptchaRef.current) recaptchaRef.current.reset();
+      setRecaptchaToken(null);
     }
+    
+    setIsSubmitting(false);
   };
 
   return (
     <form className="tarjeta formulario formulario-contacto" onSubmit={handleSubmit}>
       <h2>Escríbenos</h2>
       <p className="formulario-intro">Completa el formulario y te responderemos lo antes posible.</p>
-
-      {success && (
-        <div style={{ padding: '1rem', background: '#d4edda', color: '#155724', borderRadius: '4px', marginBottom: '1rem' }}>
-          <strong>Mensaje enviado.</strong> Gracias por escribirnos, te responderemos pronto.
-        </div>
-      )}
-
-      {error && (
-        <div style={{ padding: '1rem', background: '#f8d7da', color: '#721c24', borderRadius: '4px', marginBottom: '1rem' }}>
-          <strong>Error.</strong> No se pudo enviar el mensaje. Inténtalo de nuevo.
-        </div>
-      )}
 
       <div className="dos-columnas">
         <div className="campo">
@@ -83,6 +73,17 @@ export default function ContactForm() {
         <label htmlFor="mensaje">Mensaje *</label>
         <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Escribe tu mensaje..."></textarea>
       </div>
+      
+      {siteKey && (
+        <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={siteKey}
+            onChange={(token) => setRecaptchaToken(token)}
+          />
+        </div>
+      )}
+
       <button className="btn btn-secundario" type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Enviando..." : "Enviar mensaje"}
       </button>

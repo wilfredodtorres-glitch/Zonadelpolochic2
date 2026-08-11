@@ -133,9 +133,10 @@ export default async function Home() {
                   <h3 style={{ color: anuncio.importante ? '#b91c1c' : 'inherit' }}>
                     {anuncio.titulo}
                   </h3>
-                  <p style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem', color: '#475569' }}>
-                    {anuncio.contenido}
-                  </p>
+                  <div 
+                    style={{ marginBottom: '1rem', color: '#475569', overflowWrap: 'break-word', fontSize: '0.95rem' }} 
+                    dangerouslySetInnerHTML={{ __html: anuncio.contenido }} 
+                  />
                   <small style={{ color: '#94a3b8' }}>
                     Publicado el: {new Date(anuncio.created_at).toLocaleDateString("es-ES", { day: 'numeric', month: 'long', year: 'numeric' })}
                   </small>

@@ -21,6 +21,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <Toaster position="top-right" />
       <aside style={{ width: '250px', backgroundColor: '#111827', color: 'white', display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '2rem 1rem', fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid #374151' }}>
           Iglesia Adventista

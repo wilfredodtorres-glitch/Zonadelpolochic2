@@ -21,6 +21,10 @@ export async function createMinisterio(formData) {
   if (!imagenFile || imagenFile.size === 0) {
     return { error: "Debes seleccionar una imagen." };
   }
+  
+  if (!imagenFile.type.startsWith("image/")) {
+    return { error: "Formato inválido. Por favor, sube solo imágenes (.jpg, .png, .webp)." };
+  }
 
   const fileName = `ministerios/${Date.now()}-${imagenFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
   const { data: uploadData, error: uploadError } = await supabase.storage
@@ -54,6 +58,10 @@ export async function updateMinisterio(id, formData) {
   const imagenFile = formData.get("imagen");
   if (!imagenFile || imagenFile.size === 0) {
     return { error: "Debes seleccionar una imagen para actualizar." };
+  }
+  
+  if (!imagenFile.type.startsWith("image/")) {
+    return { error: "Formato inválido. Por favor, sube solo imágenes (.jpg, .png, .webp)." };
   }
 
   const fileName = `ministerios/${Date.now()}-${imagenFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
