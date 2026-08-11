@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import AdminLogoutButton from "@/components/AdminLogoutButton";
 import Link from "next/link";
+import { Toaster } from "react-hot-toast";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
