@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createSermon, updateSermon, deleteSermon } from "@/app/admin/sermones/actions";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 import toast from "react-hot-toast";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
