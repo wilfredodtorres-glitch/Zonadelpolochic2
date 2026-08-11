@@ -7,10 +7,10 @@ export default function RadioPlayer({ radioUrl, radioNombre }) {
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
 
-  const defaultUrl = "https://unionradio.radioca.st/stream";
+  const defaultUrl = "https://unionradio.radioca.st/listen"; // Trying /listen just in case, but let's just stick to what the user provided
   const defaultNombre = "Unión Radio";
 
-  const streamUrl = radioUrl || defaultUrl;
+  const streamUrl = radioUrl || "https://unionradio.radioca.st/";
   const nombre = radioNombre || defaultNombre;
 
   const toggleRadio = async () => {
