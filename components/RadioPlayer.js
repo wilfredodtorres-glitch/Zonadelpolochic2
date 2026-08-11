@@ -7,8 +7,8 @@ export default function RadioPlayer({ radioUrl, radioNombre }) {
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
 
-  const defaultUrl = "https://stream.zeno.fm/radio-adventista-guatemala";
-  const defaultNombre = "Radio Adventista de Guatemala";
+  const defaultUrl = "https://unionradio.radioca.st/";
+  const defaultNombre = "Unión Radio";
 
   const streamUrl = radioUrl || defaultUrl;
   const nombre = radioNombre || defaultNombre;
