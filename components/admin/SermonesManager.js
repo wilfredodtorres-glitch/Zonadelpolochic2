@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import toast from "react-hot-toast";
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const quillModules = {
   toolbar: [
