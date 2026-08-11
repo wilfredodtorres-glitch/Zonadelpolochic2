@@ -45,11 +45,25 @@ export async function submitContact(formData) {
     mensaje: mensaje.trim(),
   };
 
-  const { error: dbError } = await supabase.from("mensajes_contacto").insert([datos]);
-  
-  if (dbError) {
-    console.error("Error al enviar contacto:", dbError);
-    return { error: "Hubo un error al guardar tu mensaje." };
+  if (datos.motivo === "Petición de oración") {
+    // Si es petición de oración, guardarla en la tabla correcta para que vaya al Muro
+    const { error: dbError } = await supabase.from("peticiones_oracion").insert([{
+      nombre: datos.nombre,
+      peticion: datos.mensaje
+    }]);
+    
+    if (dbError) {
+      console.error("Error al enviar petición de oración desde contacto:", dbError);
+      return { error: "Hubo un error al guardar tu petición." };
+    }
+  } else {
+    // Para otros motivos, guardar en la bandeja de mensajes normales
+    const { error: dbError } = await supabase.from("mensajes_contacto").insert([datos]);
+    
+    if (dbError) {
+      console.error("Error al enviar contacto:", dbError);
+      return { error: "Hubo un error al guardar tu mensaje." };
+    }
   }
 
   return { success: true };
