@@ -26,12 +26,23 @@ export async function submitContact(formData) {
     }
   }
 
+  const nombre = formData.get("nombre");
+  const correo = formData.get("correo");
+  const motivo = formData.get("motivo");
+  const mensaje = formData.get("mensaje");
+
+  // Validación Nivel 2: Evitar espacios en blanco o datos vacíos
+  if (!nombre || nombre.trim() === "") return { error: "El nombre es obligatorio y no puede estar vacío." };
+  if (!correo || correo.trim() === "") return { error: "El correo electrónico es obligatorio." };
+  if (!motivo || motivo.trim() === "") return { error: "Debes seleccionar un motivo." };
+  if (!mensaje || mensaje.trim() === "") return { error: "El mensaje no puede estar vacío." };
+
   const datos = {
-    nombre: formData.get("nombre"),
-    telefono: formData.get("telefono") || null,
-    correo: formData.get("correo"),
-    motivo: formData.get("motivo"),
-    mensaje: formData.get("mensaje"),
+    nombre: nombre.trim(),
+    telefono: formData.get("telefono") ? formData.get("telefono").trim() : null,
+    correo: correo.trim(),
+    motivo: motivo.trim(),
+    mensaje: mensaje.trim(),
   };
 
   const { error: dbError } = await supabase.from("mensajes_contacto").insert([datos]);

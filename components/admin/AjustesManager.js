@@ -3,14 +3,41 @@
 import { useState } from "react";
 import { guardarConfiguracion } from "@/app/admin/ajustes/actions";
 import toast from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 
 export default function AjustesManager({ configInicial }) {
   const [cargando, setCargando] = useState(false);
+  const [preview, setPreview] = useState(configInicial?.hero_imagen_url || null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(configInicial?.hero_imagen_url || null);
+    }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
     setCargando(true);
     const formData = new FormData(e.target);
+
+    const imageFile = formData.get("hero_imagen");
+    if (imageFile && imageFile.size > 0 && imageFile.type.startsWith("image/")) {
+      try {
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(imageFile, options);
+        formData.set("hero_imagen", new File([compressedFile], imageFile.name, { type: compressedFile.type }));
+      } catch (error) {
+        console.error("Error comprimiendo imagen:", error);
+        toast.error("Error al comprimir la imagen de portada. Se intentará subir original.");
+      }
+    }
 
     const res = await guardarConfiguracion(formData);
     
@@ -27,7 +54,71 @@ export default function AjustesManager({ configInicial }) {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         
         <div>
-          <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#111827' }}>Información de Contacto</h3>
+          <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#111827' }}>Portada Principal (Hero)</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Título de Portada</label>
+              <input 
+                name="hero_titulo" 
+                type="text" 
+                required
+                defaultValue={configInicial?.hero_titulo || "Iglesia Adventista del Séptimo Día, Telemán"} 
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }} 
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Subtítulo</label>
+              <textarea 
+                name="hero_subtitulo" 
+                rows="2"
+                required
+                defaultValue={configInicial?.hero_subtitulo || "Un lugar para encontrar esperanza..."} 
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }} 
+              />
+            </div>
+          </div>
+          <div style={{ marginTop: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Imagen de Fondo de Portada</label>
+            <input type="hidden" name="hero_imagen_url_existing" value={configInicial?.hero_imagen_url || ""} />
+            <input 
+              name="hero_imagen" 
+              type="file" 
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px', background: '#f9fafb' }} 
+            />
+            {preview && (
+              <div style={{ marginTop: '1rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb', width: '100%', height: '200px', backgroundImage: `url(${preview})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#111827', marginTop: '1rem' }}>Transmisión de Radio</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Nombre de la Radio</label>
+              <input 
+                name="radio_nombre" 
+                type="text" 
+                defaultValue={configInicial?.radio_nombre || "Radio Adventista de Guatemala"} 
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }} 
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Enlace del Stream (URL)</label>
+              <input 
+                name="radio_url" 
+                type="url" 
+                defaultValue={configInicial?.radio_url || "https://stream.zeno.fm/radio-adventista-guatemala"} 
+                style={{ width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '4px' }} 
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1rem', color: '#111827', marginTop: '1rem' }}>Información de Contacto</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Teléfono / WhatsApp</label>

@@ -1,0 +1,64 @@
+"use client";
+
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { submitPeticion } from "@/app/(main)/oracion/actions";
+import toast from "react-hot-toast";
+
+export default function OracionForm({ recaptchaSiteKey }) {
+  const [cargando, setCargando] = useState(false);
+  const [token, setToken] = useState(null);
+  const recaptchaRef = useRef(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!token && recaptchaSiteKey) {
+      toast.error("Por favor, completa el captcha");
+      return;
+    }
+
+    setCargando(true);
+    const formData = new FormData(e.target);
+    const res = await submitPeticion(formData, token || "no-captcha");
+    
+    if (res.error) {
+      toast.error(res.error);
+      if (recaptchaSiteKey) recaptchaRef.current?.reset();
+      setToken(null);
+    } else {
+      toast.success("Petición enviada. Nuestro equipo orará por ti.");
+      e.target.reset();
+      if (recaptchaSiteKey) recaptchaRef.current?.reset();
+      setToken(null);
+    }
+    setCargando(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="formulario-contacto">
+      <div className="grupo-input">
+        <label htmlFor="nombre">Tu Nombre (o Anónimo)</label>
+        <input type="text" id="nombre" name="nombre" required placeholder="Ej. Familia López" />
+      </div>
+
+      <div className="grupo-input">
+        <label htmlFor="peticion">Motivo de Oración</label>
+        <textarea id="peticion" name="peticion" rows="4" required placeholder="Escribe tu petición aquí..."></textarea>
+      </div>
+
+      {recaptchaSiteKey && (
+        <div style={{ marginBottom: "1rem" }}>
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={recaptchaSiteKey}
+            onChange={(val) => setToken(val)}
+          />
+        </div>
+      )}
+
+      <button type="submit" className="btn btn-principal" disabled={cargando} style={{ width: '100%' }}>
+        {cargando ? "Enviando..." : "Enviar Petición"}
+      </button>
+    </form>
+  );
+}

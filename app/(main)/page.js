@@ -5,6 +5,17 @@ import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
   const supabase = await createClient();
+  const { data: config } = await supabase
+    .from("configuracion")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  const { data: horariosDb } = await supabase
+    .from("horarios")
+    .select("*")
+    .order("orden", { ascending: true });
+
   const { data: anunciosDb } = await supabase
     .from("anuncios")
     .select("*")
@@ -21,12 +32,12 @@ export default async function Home() {
 
   return (
     <main>
-      <section className="hero">
+      <section className="hero" style={config?.hero_imagen_url ? { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${config.hero_imagen_url})` } : {}}>
         <div className="hero-inner">
           <p className="kicker">Zona Polochic · Alta Verapaz</p>
-          <h1>Iglesia Adventista del Séptimo Día, Telemán</h1>
+          <h1>{config?.hero_titulo || "Iglesia Adventista del Séptimo Día, Telemán"}</h1>
           <p className="lead">
-            Un lugar para encontrar esperanza, crecer en la fe y servir a nuestra comunidad. Te esperamos cada sábado.
+            {config?.hero_subtitulo || "Un lugar para encontrar esperanza, crecer en la fe y servir a nuestra comunidad. Te esperamos cada sábado."}
           </p>
           <div className="hero-acciones">
             <Link className="btn btn-principal" href="/eventos">
@@ -41,20 +52,16 @@ export default async function Home() {
 
       <section className="seccion" style={{ paddingTop: 0, paddingBottom: "2rem" }}>
         <div className="contenedor">
-          <div className="stats">
-            <div className="stat">
-              <span className="valor">9:00 AM - 11:00 AM</span>
-              <span className="etiqueta">Escuela Sabática</span>
+          {horariosDb && horariosDb.length > 0 && (
+            <div className="stats">
+              {horariosDb.map(horario => (
+                <div key={horario.id} className="stat">
+                  <span className="valor">{horario.dia_hora}</span>
+                  <span className="etiqueta">{horario.titulo}</span>
+                </div>
+              ))}
             </div>
-            <div className="stat">
-              <span className="valor">11:00 AM - 12:00 PM</span>
-              <span className="etiqueta">Culto Divino</span>
-            </div>
-            <div className="stat">
-              <span className="valor">4:00 PM - 6:00 PM</span>
-              <span className="etiqueta">Sociedad de Jóvenes</span>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -179,7 +186,10 @@ export default async function Home() {
 
       <section className="seccion radio-seccion">
         <div className="contenedor">
-          <RadioPlayer />
+          <RadioPlayer 
+            radioUrl={config?.radio_url} 
+            radioNombre={config?.radio_nombre} 
+          />
         </div>
       </section>
 

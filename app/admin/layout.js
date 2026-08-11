@@ -38,8 +38,14 @@ export default function AdminLayout({ children }) {
           <Link href="/admin/donaciones" style={navItemStyle("/admin/donaciones")}>
             Donaciones
           </Link>
+          <Link href="/admin/oracion" style={navItemStyle("/admin/oracion")}>
+            Peticiones de Oración
+          </Link>
           <Link href="/admin/ministerios" style={navItemStyle("/admin/ministerios")}>
             Ministerios
+          </Link>
+          <Link href="/admin/liderazgo" style={navItemStyle("/admin/liderazgo")}>
+            Liderazgo (Staff)
           </Link>
           <Link href="/admin/anuncios" style={navItemStyle("/admin/anuncios")}>
             Anuncios y Boletín
@@ -55,6 +61,9 @@ export default function AdminLayout({ children }) {
           </Link>
           <Link href="/admin/ajustes" style={navItemStyle("/admin/ajustes")}>
             Ajustes Generales
+          </Link>
+          <Link href="/admin/horarios" style={navItemStyle("/admin/horarios")}>
+            Horarios de Culto
           </Link>
           <Link href="/" target="_blank" style={{ ...navItemStyle("/"), color: '#9ca3af', borderTop: '1px solid #374151', marginTop: '1rem', paddingTop: '1rem' }}>
             Ver sitio público ↗

@@ -2,10 +2,16 @@
 import { useState, useRef } from "react";
 import { Play, Pause } from "lucide-react";
 
-export default function RadioPlayer() {
+export default function RadioPlayer({ radioUrl, radioNombre }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
+
+  const defaultUrl = "https://stream.zeno.fm/radio-adventista-guatemala";
+  const defaultNombre = "Radio Adventista de Guatemala";
+
+  const streamUrl = radioUrl || defaultUrl;
+  const nombre = radioNombre || defaultNombre;
 
   const toggleRadio = async () => {
     if (!audioRef.current) return;
@@ -16,7 +22,7 @@ export default function RadioPlayer() {
     } else {
       setIsLoading(true);
       if (!audioRef.current.src) {
-        audioRef.current.src = "https://stream.zeno.fm/radio-adventista-guatemala";
+        audioRef.current.src = streamUrl;
       }
       try {
         await audioRef.current.play();
@@ -43,8 +49,8 @@ export default function RadioPlayer() {
         <span className="seccion-etiqueta" id="radio-status-text">
           {isPlaying ? "EN VIVO 🔴" : isLoading ? "Cargando..." : "En vivo"}
         </span>
-        <h2>🎙️ Radio Adventista de Guatemala</h2>
-        <p>Escucha Unión Radio GT en línea: música, devocionales, programas de salud y esperanza las 24 horas.</p>
+        <h2>🎙️ {nombre}</h2>
+        <p>Escucha la estación en línea las 24 horas.</p>
 
         <audio ref={audioRef} preload="none"></audio>
 
