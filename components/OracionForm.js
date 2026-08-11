@@ -35,19 +35,19 @@ export default function OracionForm({ recaptchaSiteKey }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="formulario-contacto">
-      <div className="grupo-input">
+    <form onSubmit={handleSubmit} className="formulario formulario-contacto">
+      <div className="campo">
         <label htmlFor="nombre">Tu Nombre (o Anónimo)</label>
         <input type="text" id="nombre" name="nombre" required placeholder="Ej. Familia López" />
       </div>
 
-      <div className="grupo-input">
+      <div className="campo">
         <label htmlFor="peticion">Motivo de Oración</label>
         <textarea id="peticion" name="peticion" rows="4" required placeholder="Escribe tu petición aquí..."></textarea>
       </div>
 
       {recaptchaSiteKey && (
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="campo" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey={recaptchaSiteKey}
@@ -56,7 +56,7 @@ export default function OracionForm({ recaptchaSiteKey }) {
         </div>
       )}
 
-      <button type="submit" className="btn btn-principal" disabled={cargando} style={{ width: '100%' }}>
+      <button type="submit" className="btn btn-secundario" disabled={cargando} style={{ width: '100%' }}>
         {cargando ? "Enviando..." : "Enviar Petición"}
       </button>
     </form>

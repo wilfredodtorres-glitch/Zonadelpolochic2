@@ -37,6 +37,7 @@ export default function Header() {
           <Link href="/sermones">Sermones</Link>
           <Link href="/salud">Salud</Link>
           <Link href="/eventos">Eventos</Link>
+          <Link href="/oracion">Oración</Link>
           <Link href="/contacto">Contacto</Link>
           <Link className="btn btn-principal" href="/donar">
             Donar
