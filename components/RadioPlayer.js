@@ -7,7 +7,7 @@ export default function RadioPlayer({ radioUrl, radioNombre }) {
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
 
-  const defaultUrl = "https://unionradio.radioca.st/";
+  const defaultUrl = "https://unionradio.radioca.st/stream";
   const defaultNombre = "Unión Radio";
 
   const streamUrl = radioUrl || defaultUrl;
