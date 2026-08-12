@@ -75,7 +75,7 @@ export default function ContactForm() {
       </div>
       
       {siteKey && (
-        <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+        <div className="recaptcha-wrapper">
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey={siteKey}

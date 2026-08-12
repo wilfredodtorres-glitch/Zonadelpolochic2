@@ -47,7 +47,7 @@ export default function OracionForm({ recaptchaSiteKey }) {
       </div>
 
       {recaptchaSiteKey && (
-        <div className="campo" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+        <div className="recaptcha-wrapper">
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey={recaptchaSiteKey}
