@@ -28,9 +28,9 @@ export default async function OracionPage() {
 
       <div className="seccion">
         <div className="contenedor">
-          <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
+          <div className="oracion-layout">
             
-            <div style={{ flex: '1 1 300px' }}>
+            <div className="oracion-formulario-col">
               <div className="tarjeta">
                 <h2>Envía tu Petición</h2>
                 <p style={{ marginBottom: '1.5rem', color: '#4b5563' }}>Nuestro equipo de intercesores estará orando por ti durante la semana.</p>
@@ -38,7 +38,7 @@ export default async function OracionPage() {
               </div>
             </div>
 
-            <div style={{ flex: '2 1 500px' }}>
+            <div className="oracion-muro-col">
               <div className="seccion-cabecera" style={{ marginBottom: '2rem' }}>
                 <span className="seccion-etiqueta">Muro de Oración</span>
                 <h2>Únete en Oración</h2>

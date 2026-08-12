@@ -1226,6 +1226,21 @@ img {
   }
 }
 
+/* ---------- Oracion ---------- */
+.oracion-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 960px) {
+  .oracion-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 3rem;
+  }
+}
+
 /* ---------- Contacto ---------- */
 .contacto-layout {
   display: grid;
