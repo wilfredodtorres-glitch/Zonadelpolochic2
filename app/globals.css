@@ -30,6 +30,7 @@ body {
   background: var(--fondo);
   line-height: 1.65;
   font-size: 1rem;
+  overflow-x: hidden;
 }
 
 h1,
@@ -492,7 +493,15 @@ img {
   background: var(--blanco);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
-  padding: 1.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .tarjeta {
+    padding: 2rem;
+  }
 }
 
 .tarjeta h3 {
@@ -1040,6 +1049,7 @@ img {
 .campo input,
 .campo select,
 .campo textarea {
+  width: 100%;
   font: inherit;
   font-size: 0.925rem;
   padding: 0.65rem 0.8rem;
@@ -1255,7 +1265,13 @@ img {
 }
 
 .formulario-contacto {
-  padding: 2rem;
+  padding: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .formulario-contacto {
+    padding: 2rem;
+  }
 }
 
 .formulario-contacto h2 {
