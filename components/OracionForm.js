@@ -17,8 +17,21 @@ export default function OracionForm({ recaptchaSiteKey }) {
       return;
     }
 
-    setCargando(true);
     const formData = new FormData(e.target);
+
+    const nombre = formData.get("nombre");
+    if (!nombre || nombre.trim() === "") {
+      toast.error("Por favor, ingresa tu nombre o escribe Anónimo.");
+      return;
+    }
+
+    const peticion = formData.get("peticion");
+    if (!peticion || peticion.trim() === "") {
+      toast.error("El motivo de oración no puede estar vacío.");
+      return;
+    }
+
+    setCargando(true);
     const res = await submitPeticion(formData, token || "no-captcha");
     
     if (res.error) {
@@ -35,7 +48,7 @@ export default function OracionForm({ recaptchaSiteKey }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="formulario formulario-contacto">
+    <form onSubmit={handleSubmit} className="formulario formulario-contacto" noValidate>
       <div className="campo">
         <label htmlFor="nombre">Tu Nombre (o Anónimo)</label>
         <input type="text" id="nombre" name="nombre" required placeholder="Ej. Familia López" />

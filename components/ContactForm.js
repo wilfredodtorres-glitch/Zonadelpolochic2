@@ -21,6 +21,36 @@ export default function ContactForm() {
     setIsSubmitting(true);
 
     const formData = new FormData(e.target);
+    
+    const nombre = formData.get("nombre");
+    if (!nombre || nombre.trim() === "") {
+      toast.error("El nombre completo es obligatorio.");
+      return;
+    }
+
+    const correo = formData.get("correo");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correo || correo.trim() === "") {
+      toast.error("El correo electrónico es obligatorio.");
+      return;
+    }
+    if (!emailRegex.test(correo)) {
+      toast.error("El correo electrónico ingresado no es válido.");
+      return;
+    }
+
+    const motivo = formData.get("motivo");
+    if (!motivo) {
+      toast.error("Debes seleccionar un motivo.");
+      return;
+    }
+
+    const mensaje = formData.get("mensaje");
+    if (!mensaje || mensaje.trim() === "") {
+      toast.error("Por favor, escribe tu mensaje.");
+      return;
+    }
+
     if (siteKey) formData.append("recaptchaToken", recaptchaToken);
 
     const result = await submitContact(formData);
@@ -40,7 +70,7 @@ export default function ContactForm() {
   };
 
   return (
-    <form className="tarjeta formulario formulario-contacto" onSubmit={handleSubmit}>
+    <form className="tarjeta formulario formulario-contacto" onSubmit={handleSubmit} noValidate>
       <h2>Escríbenos</h2>
       <p className="formulario-intro">Completa el formulario y te responderemos lo antes posible.</p>
 
